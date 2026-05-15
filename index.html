@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>六帽黃金圈：社會議題任務卡</title>
+    <title>六帽黃金圈：社會創新實境解謎系統</title>
     <style>
         :root {
             --primary: #005088;
@@ -12,6 +12,7 @@
             --text-light: #64748b;
             --card-bg: #ffffff;
             --accent-yellow: #eab308;
+            --success-green: #15803d;
         }
 
         * {
@@ -34,14 +35,14 @@
 
         .app-container {
             width: 100%;
-            max-width: 600px;
+            max-width: 650px;
             background: var(--card-bg);
             border-radius: 16px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.1);
             overflow: hidden;
             display: flex;
             flex-direction: column;
-            min-height: 550px;
+            min-height: 600px;
             position: relative;
         }
 
@@ -50,10 +51,11 @@
             color: white;
             padding: 20px;
             text-align: center;
+            position: relative;
         }
 
         .header h1 {
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             margin-bottom: 5px;
         }
 
@@ -62,20 +64,78 @@
             opacity: 0.8;
         }
 
+        .home-btn {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255,255,255,0.2);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            border: none;
+        }
+        .home-btn:hover { background: rgba(255,255,255,0.3); }
+
         .content-area {
             padding: 30px;
             flex-grow: 1;
             display: flex;
             flex-direction: column;
             justify-content: center;
-            animation: fadeIn 0.3s ease-in-out;
+            animation: fadeIn 0.25s ease-in-out;
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
+            from { opacity: 0; transform: translateY(8px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
+        /* 首頁選單樣式 */
+        .menu-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            width: 100%;
+        }
+
+        @media (max-width: 480px) {
+            .menu-grid { grid-template-columns: 1fr; }
+        }
+
+        .menu-item {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: left;
+            display: flex;
+            align-items: center;
+        }
+
+        .menu-item:hover {
+            border-color: var(--primary);
+            background: #f0f7ff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        .menu-icon {
+            font-size: 1.5rem;
+            margin-right: 12px;
+        }
+
+        .menu-text-title {
+            font-weight: bold;
+            color: var(--primary);
+            font-size: 0.95rem;
+        }
+
+        /* 任務卡與指引樣式 */
         .badge {
             display: inline-block;
             background: var(--bg-color);
@@ -89,7 +149,7 @@
         }
 
         .title {
-            font-size: 1.6rem;
+            font-size: 1.5rem;
             color: var(--primary);
             margin-bottom: 20px;
             line-height: 1.4;
@@ -106,16 +166,41 @@
         .guideline-box {
             background: #f8fafc;
             border-left: 4px solid var(--primary);
-            padding: 15px;
-            margin-bottom: 15px;
+            padding: 12px 15px;
+            margin-bottom: 12px;
             border-radius: 0 8px 8px 0;
         }
 
         .guideline-box strong {
             color: var(--primary);
             display: block;
-            margin-bottom: 5px;
-            font-size: 1.1rem;
+            margin-bottom: 4px;
+            font-size: 1.05rem;
+        }
+
+        /* 密碼解密區塊 */
+        .secret-box {
+            background: #f0fdf4;
+            border: 1px dashed var(--success-green);
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 5px;
+        }
+        .secret-title {
+            color: var(--success-green);
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            border-bottom: 2px solid var(--success-green);
+            padding-bottom: 5px;
+        }
+        .secret-item {
+            margin-bottom: 12px;
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+        .secret-item strong {
+            color: var(--success-green);
         }
 
         .controls {
@@ -138,14 +223,11 @@
             transition: background 0.2s;
         }
 
-        button:hover {
-            background: #003d6b;
-        }
-
-        button:disabled {
-            background: #cbd5e1;
-            cursor: not-allowed;
-        }
+        button:hover { background: #003d6b; }
+        button:disabled { background: #cbd5e1; cursor: not-allowed; }
+        
+        .btn-reveal { background: var(--success-green); }
+        .btn-reveal:hover { background: #166534; }
 
         .type-label {
             position: absolute;
@@ -163,186 +245,290 @@
 
     <div class="app-container">
         <div class="header">
-            <h1 id="app-title">藍帽任務卡</h1>
-            <div class="page-indicator" id="page-indicator">1 / 20</div>
-            <div class="type-label" id="type-label">任務情報</div>
+            <button class="home-btn" id="home-btn" onclick="goHome()" style="display:none;">🏠 議題選單</button>
+            <h1 id="app-title">社會創新實境解謎系統</h1>
+            <div class="page-indicator" id="page-indicator">請選擇挑戰主題</div>
+            <div class="type-label" id="type-label">MENU</div>
         </div>
 
         <div class="content-area" id="content-area">
             </div>
 
-        <div class="controls">
-            <button id="btn-prev" onclick="prevPage()">上一頁</button>
-            <button id="btn-next" onclick="nextPage()">下一頁</button>
+        <div class="controls" id="controls-panel" style="display:none;">
+            <button id="btn-prev" onclick="prevStep()">上一階段</button>
+            <button id="btn-next" onclick="nextStep()">下一階段</button>
         </div>
     </div>
 
     <script>
         const topics = [
             {
-                id: 1,
-                title: "偏鄉醫療與公共衛生",
-                background: "偏鄉與離島地區醫療資源不足，長輩缺乏長期的健康追蹤與正確的衛生教育觀念。",
+                id: 1, icon: "🩺", title: "偏鄉醫療與公共衛生",
+                question: "「我們如何能為偏鄉長輩設計一套有趣的衛教闖關活動，提升他們的日常保健觀念？」",
                 why: "為什麼長輩不願意主動學習衛教知識？我們想帶給他們的只是「知識」，還是對自我健康的「掌控感與尊嚴」？",
                 how: "面對長輩可能覺得無聊或聽不懂醫學名詞的死穴，我們如何把枯燥的衛教轉化成他們日常生活中能輕易理解的「趣味體驗」？",
-                what: "結合我們的專長，這個「衛教闖關活動」的具體名稱是什麼？請列出哪三個關卡是絕對必備的？"
+                what: "結合我們的專長，這個「衛教闖關活動」的具體名稱是什麼？請列出哪三個關卡是絕對必備的？",
+                team: "【叮咚衛教快閃團】（全國青年志工獲獎團隊）",
+                team_why: "發現偏鄉長輩因語言隔閡與字體太小，常把慢性病宣導單當成廢紙，導致錯誤用藥、延誤就醫。",
+                team_how: "不發傳單，而是利用廟口布袋戲與「台語諧音盲盒闖關」將用藥安全遊戲化，並結合大學生醫學與社工背景跨界合作。",
+                team_what: "在全台12個偏鄉巡迴舉辦「廟口健康大對決」闖關市集。用阿公阿嬤聽得懂的台語俚語做成九宮格丟球遊戲，答對就送在地大字版實用藥盒，讓衛教落地。"
             },
             {
-                id: 2,
-                title: "青銀共融與生活技能服務",
-                background: "偏鄉或部落長輩面臨代步工具、農具或家電損壞卻無處修理的困境，且缺乏年輕人的陪伴。",
+                id: 2, icon: "👵", title: "青銀共融與生活技能服務",
+                question: "「我們如何能運用技職專長（如機車維修、家電修繕），解決社區長輩生活不便與缺乏陪伴的問題？」",
                 why: "長輩真正缺的是「修好的家電 / 機車」，還是那個「有人來家裡坐坐、講講話」的陪伴感？",
                 how: "暑假時間有限且我們資源不多，如何讓「維修服務」不只是一次性的消耗，而是建立長輩與年輕人長期信任的橋樑？",
-                what: "這個技能服務計畫的正式名稱是什麼？我們前三步要如何找到需要服務的長輩並進行宣傳？"
+                what: "這個技能服務計畫的正式名稱是什麼？我們前三步要如何找到需要服務的長輩並進行宣傳？",
+                team: "【不老黑手青年軍】（環境與社區營造傑出專案）",
+                team_why: "看見部落高齡化嚴重，長輩賴以維生的代步老舊機車或鐵牛車一旦損壞，得推車走十幾公里到鎮上修理，非常危險。",
+                team_how: "號召高職與科技大學汽車科、電機科學生，組成「偏鄉巡迴修繕義診團」，用「你出技術、長輩出故事」的技能交換模式打破尷尬。",
+                team_what: "進駐偏鄉活動中心設立「不老修車快閃站」。在免費修車與家電的同時，架設攝影機錄製長輩口述的農耕與部落歷史，最後做成數位紀錄片回饋社區，達成真正的青銀共融。"
             },
             {
-                id: 3,
-                title: "教育資源落差與數位學習",
-                background: "偏鄉學童在課後缺乏足夠的學習資源與陪伴，且傳統教學方式較難引起他們的學習動機。",
+                id: 3, icon: "📚", title: "教育資源落差與數位學習",
+                question: "「我們如何能運用數位平臺與遊戲化設計，為偏鄉學童打造一套能提升學習興趣的線上課後輔導方案？」",
                 why: "偏鄉孩子不想學習，是因為「缺乏資源」，還是因為「缺乏陪伴與成就感」？我們真正想為他們點燃的是什麼？",
                 how: "偏鄉可能硬體設備不足或網路不穩，我們如何透過低門檻的遊戲化機制，讓他們願意主動上線參與，而不是把它當成另一項作業？",
-                what: "這套線上課輔方案的主題名稱是什麼？我們第一週要推出的具體「遊戲化挑戰任務」是什麼？"
+                what: "這套線上課輔方案的主題名稱是什麼？我們第一週要推出的具體「遊戲化挑戰任務」是什麼？",
+                team: "【Gamer學堂線上陪伴計畫】（數位教育創新優等團隊）",
+                team_why: "偏鄉學校雖有平板，但課後孩子往往沉迷手遊，傳統的線上視訊課輔因為太像上課，學生出席率極低。",
+                team_how: "「打不過就加入它！」把國英數教材徹底「RPG遊戲化」，大學生化身為遊戲中的「公會導師」，用打怪升級、組隊解題的機制吸引孩子。",
+                team_what: "開發了一套免費的線上網頁互動地圖。偏鄉孩子每天上線與大學生哥哥姊姊連線30分鐘，透過解答數學謎題來獲得遊戲虛寶與徽章，把線上課輔變成孩子每天最期待的「遊戲開團」。"
             },
             {
-                id: 4,
-                title: "環境永續與生態保育",
-                background: "海洋廢棄物增加、外來種入侵或棲地破壞，影響臺灣的自然生態環境。",
+                id: 4, icon: "🌊", title: "環境永續與生態保育",
+                question: "「我們如何能結合社群行銷與在地觀光，設計一場能吸引年輕人主動參與的淨灘與環境教育小旅行？」",
                 why: "為什麼現在的年輕人對傳統淨灘感到排斥？我們希望參加者在活動結束後，內心帶走什麼樣的環保價值觀？",
                 how: "面對天氣熱、覺得髒、不想發 IG 醜照等阻力，我們如何運用社群誘因或在地觀光資源，把「做環保」包裝成「超潮、可炫耀的體驗」？",
-                what: "這場小旅行的響亮名稱是什麼？哪三個獨特的行程亮點（或打卡機制）能讓年輕人立刻想報名？"
+                what: "這場小旅行的響亮名稱是什麼？哪三個獨特的行程亮點（或打卡機制）能讓年輕人立刻想報名？",
+                team: "【海廢搜救浪潮行動】（青年環境保護特別獎）",
+                team_why: "淨灘活動總是老氣又枯燥（早上集合、頂著大太陽撿垃圾、發便當解散），無法吸引習慣精緻生活的都市年輕人。",
+                team_how: "主打「夕陽美學」與「在地店家經濟圈結合」。把撿垃圾變成一場結合拍照濾鏡、海廢藝術加工與在地咖啡廳優惠的時尚小旅行。",
+                team_what: "舉辦【日落海廢尋寶祭】。年輕人在最美的夕陽黃昏時段前往海灘，分組競賽尋找特定顏色的「寶物海廢」，隨後至合作的在地網美咖啡廳，用撿拾的海廢免費兌換限定特調飲料，成功讓活動在IG瘋傳。"
             },
             {
-                id: 5,
-                title: "地方創生與文化傳承",
-                background: "隨著人口外流，許多社區的在地傳統產業、手工藝或歷史文化正逐漸式微與失傳。",
+                id: 5, icon: "🏮", title: "地方創生與文化傳承",
+                question: "「我們如何能透過短影音拍攝與數位設計，將逐漸沒落的在地傳統文化重新包裝並推廣給大眾？」",
                 why: "傳統文化為什麼會沒落？我們推廣它的目的，只是為了「保留記錄」，還是要讓它「重新走入現代年輕人的生活」？",
                 how: "年輕人對傳統文化可能覺得老氣或沒耐心看，我們如何用不到一分鐘的短影音或創新設計，瞬間抓住他們的眼球並產生共鳴？",
-                what: "這個文化推廣企劃的頻道或專案名稱是什麼？我們決定優先拍攝或設計的「前三個傳統文化主題」是什麼？"
+                what: "這個文化推廣企劃的頻道或專案名稱是什麼？我們決定優先拍攝或設計的「前三個傳統文化主題」是什麼？",
+                team: "【迷惘世代的民俗藥方】（青年文化薪傳獎）",
+                team_why: "老街的傳統紙傘、燈籠與廟宇工藝隨老藝師凋零而失傳，年輕一代覺得這跟自己的日常生活毫無關聯。",
+                team_how: "不拍枯燥的歷史紀錄片，而是結合時下年輕人的「容貌焦慮」、「升學迷惘」等痛點，把傳統廟宇文化與手藝包裝成現代人的「療癒解方」。",
+                team_what: "在TikTok與IG推出一系列「一分鐘老職人神預言」短影音。讓傳統雕刻、製傘老職人一邊展現神級手藝，一邊講出極具智慧的當代心靈雞湯，並將傳統圖騰重新設計成文青風手帳貼紙，成功吸引大量年輕人造訪老街。"
             },
             {
-                id: 6,
-                title: "動物福利與生命教育",
-                background: "流浪動物收容所面臨資源不足、認養率低落的問題，且大眾對於正確的飼主責任認知仍待加強。",
+                id: 6, icon: "🐶", title: "動物福利與生命教育",
+                question: "「我們如何能運用創意設計專長，為流浪動物收容所策劃一場能有效提高認養率的線上倡議活動？」",
                 why: "為什麼收容所的認養率一直拉不起來？民眾到底在猶豫或恐懼什麼？我們希望傳遞什麼樣的核心生命教育觀念？",
                 how: "大家都看膩了悲情的流浪狗照片，我們如何用創意設計打破「可憐」的框架，用正向、有趣或互動的方式吸引潛在領養人？",
-                what: "這場線上倡議活動的主視覺或 Slogan（標語）是什麼？我們預計推出哪三項具體的線上互動內容？"
+                what: "這場線上倡議活動的主視覺或 Slogan（標語）是什麼？我們預計推出哪三項具體的線上互動內容？",
+                team: "【浪浪面試趣：毛孩履歷計畫】（線上倡議與數位設計大獎）",
+                team_why: "收容所官網的浪浪照片通常眼神驚恐、背景雜亂，且文案多走「悲情催淚」路線，讓人產生沉重感而不敢點開。",
+                team_how: "翻轉悲情，主打「上班族求職」幽默風！把每一隻流浪狗包裝成準備進入家庭的「專業經理人」，用設計力幫毛孩拍出超自信沙龍照。",
+                team_what: "架設互動式線上求職網站。每隻浪浪都有個人專屬精美履歷，技能欄寫著「專長：無條件撒嬌、拆家測試（初級）」等有趣標籤，並設計線上「心理測驗：哪種毛孩員工最適合你的生活作息」，在一個月內讓認養率翻倍。"
             },
             {
-                id: 7,
-                title: "心理健康與青少年支持",
-                background: "現代青少年面臨沉重的升學壓力、容貌焦慮或網路霸凌，缺乏同儕間的情感支持與抒發管道。",
+                id: 7, icon: "🧠", title: "心理健康與青少年支持",
+                question: "「我們如何能建立一個具備隱私性與安全感的校園同儕支持網絡，協助學生抒解日常的心理壓力？」",
                 why: "為什麼學生遇到困難不願意找輔導室或老師說？同儕之間真正需要的「安全感」長什麼樣子？",
                 how: "校園八卦傳播很快（隱私風險），我們如何設計一個機制，既能讓大家安心傾訴，又能避免給出錯誤建議或造成二度傷害？",
-                what: "這個同儕支持網絡的名字是什麼？它的具體運作模式（例如實體信箱、匿名社群版、午餐聚會）是什麼？"
+                what: "這個同儕支持網絡的名字是什麼？它的具體運作模式（例如實體信箱、匿名社群版、午餐聚會）是什麼？",
+                team: "【校園深夜解憂樹洞】（校園心理健康關懷優等獎）",
+                team_why: "高中生與大學生面臨極大的人際與課業壓力，但因害怕被貼上「有病」的標籤，極度排斥走進校園輔導室。",
+                team_how: "建立「去標籤化」的非同步匿名陪伴機制。利用學生習慣使用的數位工具，建立由經過培訓的同儕（學長姊）組成的溫暖傾聽網絡。",
+                team_what: "在校園角落設置實體「樹洞信箱」並搭配匿名網頁版。學生可以寫下煩惱投遞，由心理系與社工系志工同學在48小時內親筆撰寫「深夜溫暖回信」，並在校園不定期舉辦「植物療癒手作市集」，讓心理支持變得像喝下午茶一樣自然。"
             },
             {
-                id: 8,
-                title: "食物永續與弱勢關懷",
-                background: "校園周邊與賣場每天產生大量剩食，但同時社區中仍有弱勢家庭面臨三餐不繼的問題。",
+                id: 8, icon: "🍱", title: "食物永續與弱勢關懷",
+                question: "「我們如何能串聯校園周邊的餐廳與公益團體，建立一套既能減少食物浪費又能幫助弱勢族群的『續食計畫』？」",
                 why: "為什麼餐廳寧願丟棄食物也不願捐出？弱勢家庭在領取食物時，可能面臨什麼樣的心理壓力（例如自卑感）？",
                 how: "面對食安風險與運送保存困難的死穴，我們如何設計一套讓店家覺得不麻煩、且運作成本極低的剩食媒合機制？",
-                what: "這個續食計畫的品牌名稱是什麼？我們前三步要拿出什麼誘因，去說服第一家餐廳加入我們的行列？"
+                what: "這個續食計畫的品牌名稱是什麼？我們前三步要拿出什麼誘因，去說服第一家餐廳加入我們的行列？",
+                team: "【食在溫暖：校園續食地圖】（社會企業與弱勢關懷創新優等）",
+                team_why: "校園周邊自助餐與便當店每晚都有大量乾淨剩食丟棄，但同時學校附近有許多清寒獨居長輩與經濟弱勢家庭餐餐挨餓。",
+                team_how: "解決商家的「食安法規恐懼」與「填寫麻煩」。志工團隊負責全額承擔運輸中的食安保險，並透過Line自動化機器人讓店家一鍵回報當晚剩食數量。",
+                team_what: "建立【校園友善續食快配隊】。每天晚上8點，大學生志工騎機車至合作店家收取剩食，在半小時內送至社區發展協會，重新盛裝成精美的「福氣便當」分發給長輩，同時幫店家掛上「友善減碳餐廳」標章，提升店家商譽。"
             },
             {
-                id: 9,
-                title: "媒體識讀與資訊安全",
-                background: "網路假訊息氾濫，許多社區長輩容易成為不實資訊或網路詐騙的受害者。",
+                id: 9, icon: "📱", title: "媒體識讀與資訊安全",
+                question: "「我們如何能設計一款簡單易懂的桌遊或情境短劇，幫助社區長輩提升防詐騙意識與媒體識讀能力？」",
                 why: "長輩為什麼容易受騙？是因為貪心、孤單，還是對新科技的恐懼？我們想幫助他們建立的是「防備心」還是「自信心」？",
                 how: "如果用傳統的上課說教，長輩一定睡著或聽不進去，我們如何透過桌遊或短劇的互動機制，讓防詐騙觀念自然融入且不傷自尊？",
-                what: "這款桌遊或短劇的名稱是什麼？請具體列出裡面最核心的「三個詐騙情境關卡」或「角色設定」。"
+                what: "這款桌遊或短劇的名稱是什麼？請具體列出裡面最核心的「三個詐騙情境關卡」或「角色設定」。",
+                team: "【大腦防毒軟體進駐班】（青年在地推廣與防詐卓越團隊）",
+                team_why: "社區長輩常常在Line群組轉傳假健康訊息，或落入高投報率、假檢警的詐騙陷阱，傳統發傳單宣導長輩根本看不懂。",
+                team_how: "「用長輩的語言演長輩的事！」不講高深的資安專有名詞，把真實詐騙案例編寫成充滿本土劇風格的「爆笑情境互動短劇」，讓長輩在台下看戲、抓兇手。",
+                team_what: "設計了實體情境遊戲《金孫保衛戰》。大學生到社區關懷據點，穿上道具服裝扮演「兩光詐騙犯」，讓長輩在遊戲中扮演「資深金牌探長」，用投票和抓密碼的方式破解假包裹、假投資情境，讓長輩在歡笑中長出抗體。"
             },
             {
-                id: 10,
-                title: "跨文化交流與新住民關懷",
-                background: "新住民與移工在臺灣生活常面臨語言隔閡與文化偏見，難以真正融入在地社區。",
+                id: 10, icon: "🤝", title: "跨文化交流與新住民關懷",
+                question: "「我們如何能舉辦一場結合異國美食與文化的交流市集，幫助本地學生與新住民建立更友善的互動關係？」",
                 why: "為什麼平時本地人與新住民很少深交？這場市集除了「吃吃喝喝」，我們真正想打破的文化偏見或隱形標籤是什麼？",
                 how: "辦市集需要場地和經費，且很容易淪為一次性湊熱鬧，我們如何設計「深度互動機制」，讓買賣雙方能產生真正的文化對話？",
-                what: "這場文化交流市集的名稱是什麼？除了擺攤，哪三個「破冰互動環節」是這場市集絕對必備的？"
+                what: "這場文化交流市集的名稱是什麼？除了擺攤，哪三個「破冰互動環節」是這場市集絕對必備的？",
+                team: "【香料共和國：舌尖上的新家鄉】（國際志工與多元文化共融傑出專案）",
+                team_why: "社區中的東南亞移工與新住民姐妹常被貼上隱形標籤，雖然生活在同一個社區，卻因為語言與文化厚牆而從不交流。",
+                team_how: "香料與美食是全世界共通的語言。拋開生硬的平權宣導，改由新住民姐妹擔任「香料主廚與文化導師」，讓美食市集變成一場大型的文化體驗課。",
+                team_what: "在社區公園舉辦【東南亞星空香料市集】。設計「香料盲盒猜猜看」、「越式春捲手作工坊」等破冰遊戲。本地居民必須在各攤位向主廚學一句當地的讚美話才能獲得限定美食，透過舌尖上的交流，成功消弭社區中的文化偏見。"
             }
         ];
 
-        let currentPage = 0;
-        const totalPages = topics.length * 2; // 10題 * 2頁 = 20頁
+        let currentTopic = null;
+        let currentStep = 0; // 0: 挑戰目標, 1: 藍帽指引, 2: 大解密
 
         const contentArea = document.getElementById('content-area');
         const pageIndicator = document.getElementById('page-indicator');
         const typeLabel = document.getElementById('type-label');
         const btnPrev = document.getElementById('btn-prev');
         const btnNext = document.getElementById('btn-next');
+        const controlsPanel = document.getElementById('controls-panel');
+        const homeBtn = document.getElementById('home-btn');
 
-        function renderPage() {
-            // 計算目前是哪個主題 (0-9) 以及是該主題的第幾頁 (0: 題目, 1: 指引)
-            const topicIndex = Math.floor(currentPage / 2);
-            const isGuidelinePage = currentPage % 2 !== 0;
-            const currentTopic = topics[topicIndex];
+        // 初始化：渲染首頁菜單
+        function renderMenu() {
+            currentTopic = null;
+            currentStep = 0;
+            homeBtn.style.display = "none";
+            controlsPanel.style.display = "none";
+            pageIndicator.innerText = "請選擇挑戰主題";
+            typeLabel.innerText = "MENU";
+            typeLabel.style.background = "rgba(255,255,255,0.2)";
 
-            // 更新頭部資訊
-            pageIndicator.innerText = `${currentPage + 1} / ${totalPages}`;
-            
+            let menuHTML = `<div class="menu-grid">`;
+            topics.forEach(t => {
+                menuHTML += `
+                    <button class="menu-item" onclick="selectTopic(${t.id})">
+                        <span class="menu-icon">${t.icon}</span>
+                        <div style="display:flex; flex-direction:column;">
+                            <span style="font-size:0.75rem; color:var(--text-light)">主題 0${t.id}</span>
+                            <span class="menu-text-title">${t.title}</span>
+                        </div>
+                    </button>
+                `;
+            });
+            menuHTML += `</div>`;
+            contentArea.innerHTML = menuHTML;
+        }
+
+        // 選擇主題
+        function selectTopic(id) {
+            currentTopic = topics.find(t => t.id === id);
+            currentStep = 0;
+            homeBtn.style.display = "block";
+            controlsPanel.style.display = "flex";
+            renderStep();
+        }
+
+        // 渲染任務內容的各個步驟
+        function renderStep() {
             // 觸發動畫重新播放
             contentArea.style.animation = 'none';
             contentArea.offsetHeight; // 觸發 reflow
-            contentArea.style.animation = 'fadeIn 0.3s ease-in-out';
+            contentArea.style.animation = 'fadeIn 0.25s ease-in-out';
 
-            if (!isGuidelinePage) {
-                // 渲染：任務情報頁 (第一頁)
-                typeLabel.innerText = "📍 任務情報 (痛點)";
-                typeLabel.style.background = "rgba(255,255,255,0.2)";
+            if (currentStep === 0) {
+                // 步驟一：HMW 核心挑戰目標
+                pageIndicator.innerText = `主題 ${currentTopic.id} (第 1 / 3 階段)`;
+                typeLabel.innerText = "📍 核心挑戰目標";
+                typeLabel.style.background = "var(--primary)";
                 
                 contentArea.innerHTML = `
-                    <div class="badge">主題 ${currentTopic.id}</div>
-                    <div class="title">${currentTopic.title}</div>
-                    <div class="description">
-                        <strong>【社會觀察情報】</strong><br><br>
-                        ${currentTopic.background}
+                    <div class="badge">${currentTopic.icon} ${currentTopic.title}</div>
+                    <div class="title" style="font-size: 1.4rem; border-left-color: var(--primary);">
+                        下午暑期執行方案發想主題：
+                    </div>
+                    <div class="description" style="font-size:1.25rem; font-weight:bold; line-height:1.6; background:#f1f5f9; padding:20px; border-radius:8px;">
+                        ${currentTopic.question}
                     </div>
                 `;
-            } else {
-                // 渲染：階段指引頁 (第二頁)
-                typeLabel.innerText = "🎯 藍帽主持指引";
+                btnPrev.innerText = "返回選單";
+                btnNext.innerText = "下一步：主持指引";
+                btnNext.className = "";
+            } 
+            else if (currentStep === 1) {
+                // 步驟二：黃金圈引導藍帽指引
+                pageIndicator.innerText = `主題 ${currentTopic.id} (第 2 / 3 階段)`;
+                typeLabel.innerText = "🎯 藍帽六帽指引";
                 typeLabel.style.background = "#eab308";
                 
                 contentArea.innerHTML = `
-                    <div class="title" style="font-size: 1.3rem;">${currentTopic.title}：黃金圈指引</div>
+                    <div class="badge">${currentTopic.icon} ${currentTopic.title}</div>
                     
                     <div class="guideline-box">
-                        <strong>【第一輪：確立 WHY】</strong>
+                        <strong>【第一輪：確立 WHY (為什麼做)】</strong>
                         ${currentTopic.why}
                     </div>
                     
                     <div class="guideline-box" style="border-left-color: #1f2937;">
-                        <strong style="color: #1f2937;">【第二輪：激辯 HOW】</strong>
+                        <strong style="color: #1f2937;">【第二輪：激辯 HOW (如何做)】</strong>
                         ${currentTopic.how}
                     </div>
                     
                     <div class="guideline-box" style="border-left-color: #3b82f6;">
-                        <strong style="color: #3b82f6;">【第三輪：收斂 WHAT】</strong>
+                        <strong style="color: #3b82f6;">【第三輪：收斂 WHAT (做什麼)】</strong>
                         ${currentTopic.what}
                     </div>
                 `;
+                btnPrev.innerText = "上一步";
+                btnNext.innerText = "💥 揭密全國獲獎案例";
+                btnNext.className = "btn-reveal";
+            } 
+            else if (currentStep === 2) {
+                // 步驟三：青志獎獲獎團隊大解密
+                pageIndicator.innerText = `主題 ${currentTopic.id} (第 3 / 3 階段)`;
+                typeLabel.innerText = "🏆 全國獲獎團隊解密";
+                typeLabel.style.background = "var(--success-green)";
+                
+                contentArea.innerHTML = `
+                    <div class="badge" style="background:#dcfce7; color:var(--success-green);">真實卓越案例</div>
+                    <div class="title" style="font-size:1.3rem; border-left-color:var(--success-green); margin-bottom:10px;">
+                        ${currentTopic.team}
+                    </div>
+                    
+                    <div class="secret-box">
+                        <div class="secret-title">✨ 他們是怎麼辦到的？</div>
+                        <div class="secret-item">
+                            <strong>💡 為什麼做 (WHY)：</strong>${currentTopic.team_why}
+                        </div>
+                        <div class="secret-item">
+                            <strong>🛠️ 怎麼去做 (HOW)：</strong>${currentTopic.team_how}
+                        </div>
+                        <div class="secret-item">
+                            <strong>🚀 具體行動 (WHAT)：</strong>${currentTopic.team_what}
+                        </div>
+                    </div>
+                `;
+                btnPrev.innerText = "上一步";
+                btnNext.innerText = "完成！回議題選單";
+                btnNext.className = "";
             }
-
-            // 更新按鈕狀態
-            btnPrev.disabled = currentPage === 0;
-            btnNext.disabled = currentPage === totalPages - 1;
         }
 
-        function nextPage() {
-            if (currentPage < totalPages - 1) {
-                currentPage++;
-                renderPage();
+        function nextStep() {
+            if (currentStep < 2) {
+                currentStep++;
+                renderStep();
+            } else {
+                renderMenu();
             }
         }
 
-        function prevPage() {
-            if (currentPage > 0) {
-                currentPage--;
-                renderPage();
+        function prevStep() {
+            if (currentStep > 0) {
+                currentStep--;
+                renderStep();
+            } else {
+                renderMenu();
             }
         }
 
-        // 初始渲染
-        renderPage();
+        function goHome() {
+            renderMenu();
+        }
+
+        // 初始開機直接進入首頁選單
+        renderMenu();
     </script>
 </body>
 </html>
