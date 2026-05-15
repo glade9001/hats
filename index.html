@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>六帽黃金圈：社會議題任務卡</title>
+    <style>
+        :root {
+            --primary: #005088;
+            --bg-color: #f3f0df;
+            --text-main: #1e293b;
+            --text-light: #64748b;
+            --card-bg: #ffffff;
+            --accent-yellow: #eab308;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: '微軟正黑體', 'Noto Sans TC', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 600px;
+            background: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            min-height: 550px;
+            position: relative;
+        }
+
+        .header {
+            background: var(--primary);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+        }
+
+        .page-indicator {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .content-area {
+            padding: 30px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .badge {
+            display: inline-block;
+            background: var(--bg-color);
+            color: var(--primary);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+            align-self: flex-start;
+        }
+
+        .title {
+            font-size: 1.6rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+            line-height: 1.4;
+            border-left: 5px solid var(--accent-yellow);
+            padding-left: 15px;
+        }
+
+        .description {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            color: var(--text-main);
+        }
+
+        .guideline-box {
+            background: #f8fafc;
+            border-left: 4px solid var(--primary);
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .guideline-box strong {
+            color: var(--primary);
+            display: block;
+            margin-bottom: 5px;
+            font-size: 1.1rem;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px;
+            background: #f1f5f9;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        button:hover {
+            background: #003d6b;
+        }
+
+        button:disabled {
+            background: #cbd5e1;
+            cursor: not-allowed;
+        }
+
+        .type-label {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255,255,255,0.2);
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <div class="header">
+            <h1 id="app-title">藍帽任務卡</h1>
+            <div class="page-indicator" id="page-indicator">1 / 20</div>
+            <div class="type-label" id="type-label">任務情報</div>
+        </div>
+
+        <div class="content-area" id="content-area">
+            </div>
+
+        <div class="controls">
+            <button id="btn-prev" onclick="prevPage()">上一頁</button>
+            <button id="btn-next" onclick="nextPage()">下一頁</button>
+        </div>
+    </div>
+
+    <script>
+        const topics = [
+            {
+                id: 1,
+                title: "偏鄉醫療與公共衛生",
+                background: "偏鄉與離島地區醫療資源不足，長輩缺乏長期的健康追蹤與正確的衛生教育觀念。",
+                why: "為什麼長輩不願意主動學習衛教知識？我們想帶給他們的只是「知識」，還是對自我健康的「掌控感與尊嚴」？",
+                how: "面對長輩可能覺得無聊或聽不懂醫學名詞的死穴，我們如何把枯燥的衛教轉化成他們日常生活中能輕易理解的「趣味體驗」？",
+                what: "結合我們的專長，這個「衛教闖關活動」的具體名稱是什麼？請列出哪三個關卡是絕對必備的？"
+            },
+            {
+                id: 2,
+                title: "青銀共融與生活技能服務",
+                background: "偏鄉或部落長輩面臨代步工具、農具或家電損壞卻無處修理的困境，且缺乏年輕人的陪伴。",
+                why: "長輩真正缺的是「修好的家電 / 機車」，還是那個「有人來家裡坐坐、講講話」的陪伴感？",
+                how: "暑假時間有限且我們資源不多，如何讓「維修服務」不只是一次性的消耗，而是建立長輩與年輕人長期信任的橋樑？",
+                what: "這個技能服務計畫的正式名稱是什麼？我們前三步要如何找到需要服務的長輩並進行宣傳？"
+            },
+            {
+                id: 3,
+                title: "教育資源落差與數位學習",
+                background: "偏鄉學童在課後缺乏足夠的學習資源與陪伴，且傳統教學方式較難引起他們的學習動機。",
+                why: "偏鄉孩子不想學習，是因為「缺乏資源」，還是因為「缺乏陪伴與成就感」？我們真正想為他們點燃的是什麼？",
+                how: "偏鄉可能硬體設備不足或網路不穩，我們如何透過低門檻的遊戲化機制，讓他們願意主動上線參與，而不是把它當成另一項作業？",
+                what: "這套線上課輔方案的主題名稱是什麼？我們第一週要推出的具體「遊戲化挑戰任務」是什麼？"
+            },
+            {
+                id: 4,
+                title: "環境永續與生態保育",
+                background: "海洋廢棄物增加、外來種入侵或棲地破壞，影響臺灣的自然生態環境。",
+                why: "為什麼現在的年輕人對傳統淨灘感到排斥？我們希望參加者在活動結束後，內心帶走什麼樣的環保價值觀？",
+                how: "面對天氣熱、覺得髒、不想發 IG 醜照等阻力，我們如何運用社群誘因或在地觀光資源，把「做環保」包裝成「超潮、可炫耀的體驗」？",
+                what: "這場小旅行的響亮名稱是什麼？哪三個獨特的行程亮點（或打卡機制）能讓年輕人立刻想報名？"
+            },
+            {
+                id: 5,
+                title: "地方創生與文化傳承",
+                background: "隨著人口外流，許多社區的在地傳統產業、手工藝或歷史文化正逐漸式微與失傳。",
+                why: "傳統文化為什麼會沒落？我們推廣它的目的，只是為了「保留記錄」，還是要讓它「重新走入現代年輕人的生活」？",
+                how: "年輕人對傳統文化可能覺得老氣或沒耐心看，我們如何用不到一分鐘的短影音或創新設計，瞬間抓住他們的眼球並產生共鳴？",
+                what: "這個文化推廣企劃的頻道或專案名稱是什麼？我們決定優先拍攝或設計的「前三個傳統文化主題」是什麼？"
+            },
+            {
+                id: 6,
+                title: "動物福利與生命教育",
+                background: "流浪動物收容所面臨資源不足、認養率低落的問題，且大眾對於正確的飼主責任認知仍待加強。",
+                why: "為什麼收容所的認養率一直拉不起來？民眾到底在猶豫或恐懼什麼？我們希望傳遞什麼樣的核心生命教育觀念？",
+                how: "大家都看膩了悲情的流浪狗照片，我們如何用創意設計打破「可憐」的框架，用正向、有趣或互動的方式吸引潛在領養人？",
+                what: "這場線上倡議活動的主視覺或 Slogan（標語）是什麼？我們預計推出哪三項具體的線上互動內容？"
+            },
+            {
+                id: 7,
+                title: "心理健康與青少年支持",
+                background: "現代青少年面臨沉重的升學壓力、容貌焦慮或網路霸凌，缺乏同儕間的情感支持與抒發管道。",
+                why: "為什麼學生遇到困難不願意找輔導室或老師說？同儕之間真正需要的「安全感」長什麼樣子？",
+                how: "校園八卦傳播很快（隱私風險），我們如何設計一個機制，既能讓大家安心傾訴，又能避免給出錯誤建議或造成二度傷害？",
+                what: "這個同儕支持網絡的名字是什麼？它的具體運作模式（例如實體信箱、匿名社群版、午餐聚會）是什麼？"
+            },
+            {
+                id: 8,
+                title: "食物永續與弱勢關懷",
+                background: "校園周邊與賣場每天產生大量剩食，但同時社區中仍有弱勢家庭面臨三餐不繼的問題。",
+                why: "為什麼餐廳寧願丟棄食物也不願捐出？弱勢家庭在領取食物時，可能面臨什麼樣的心理壓力（例如自卑感）？",
+                how: "面對食安風險與運送保存困難的死穴，我們如何設計一套讓店家覺得不麻煩、且運作成本極低的剩食媒合機制？",
+                what: "這個續食計畫的品牌名稱是什麼？我們前三步要拿出什麼誘因，去說服第一家餐廳加入我們的行列？"
+            },
+            {
+                id: 9,
+                title: "媒體識讀與資訊安全",
+                background: "網路假訊息氾濫，許多社區長輩容易成為不實資訊或網路詐騙的受害者。",
+                why: "長輩為什麼容易受騙？是因為貪心、孤單，還是對新科技的恐懼？我們想幫助他們建立的是「防備心」還是「自信心」？",
+                how: "如果用傳統的上課說教，長輩一定睡著或聽不進去，我們如何透過桌遊或短劇的互動機制，讓防詐騙觀念自然融入且不傷自尊？",
+                what: "這款桌遊或短劇的名稱是什麼？請具體列出裡面最核心的「三個詐騙情境關卡」或「角色設定」。"
+            },
+            {
+                id: 10,
+                title: "跨文化交流與新住民關懷",
+                background: "新住民與移工在臺灣生活常面臨語言隔閡與文化偏見，難以真正融入在地社區。",
+                why: "為什麼平時本地人與新住民很少深交？這場市集除了「吃吃喝喝」，我們真正想打破的文化偏見或隱形標籤是什麼？",
+                how: "辦市集需要場地和經費，且很容易淪為一次性湊熱鬧，我們如何設計「深度互動機制」，讓買賣雙方能產生真正的文化對話？",
+                what: "這場文化交流市集的名稱是什麼？除了擺攤，哪三個「破冰互動環節」是這場市集絕對必備的？"
+            }
+        ];
+
+        let currentPage = 0;
+        const totalPages = topics.length * 2; // 10題 * 2頁 = 20頁
+
+        const contentArea = document.getElementById('content-area');
+        const pageIndicator = document.getElementById('page-indicator');
+        const typeLabel = document.getElementById('type-label');
+        const btnPrev = document.getElementById('btn-prev');
+        const btnNext = document.getElementById('btn-next');
+
+        function renderPage() {
+            // 計算目前是哪個主題 (0-9) 以及是該主題的第幾頁 (0: 題目, 1: 指引)
+            const topicIndex = Math.floor(currentPage / 2);
+            const isGuidelinePage = currentPage % 2 !== 0;
+            const currentTopic = topics[topicIndex];
+
+            // 更新頭部資訊
+            pageIndicator.innerText = `${currentPage + 1} / ${totalPages}`;
+            
+            // 觸發動畫重新播放
+            contentArea.style.animation = 'none';
+            contentArea.offsetHeight; // 觸發 reflow
+            contentArea.style.animation = 'fadeIn 0.3s ease-in-out';
+
+            if (!isGuidelinePage) {
+                // 渲染：任務情報頁 (第一頁)
+                typeLabel.innerText = "📍 任務情報 (痛點)";
+                typeLabel.style.background = "rgba(255,255,255,0.2)";
+                
+                contentArea.innerHTML = `
+                    <div class="badge">主題 ${currentTopic.id}</div>
+                    <div class="title">${currentTopic.title}</div>
+                    <div class="description">
+                        <strong>【社會觀察情報】</strong><br><br>
+                        ${currentTopic.background}
+                    </div>
+                `;
+            } else {
+                // 渲染：階段指引頁 (第二頁)
+                typeLabel.innerText = "🎯 藍帽主持指引";
+                typeLabel.style.background = "#eab308";
+                
+                contentArea.innerHTML = `
+                    <div class="title" style="font-size: 1.3rem;">${currentTopic.title}：黃金圈指引</div>
+                    
+                    <div class="guideline-box">
+                        <strong>【第一輪：確立 WHY】</strong>
+                        ${currentTopic.why}
+                    </div>
+                    
+                    <div class="guideline-box" style="border-left-color: #1f2937;">
+                        <strong style="color: #1f2937;">【第二輪：激辯 HOW】</strong>
+                        ${currentTopic.how}
+                    </div>
+                    
+                    <div class="guideline-box" style="border-left-color: #3b82f6;">
+                        <strong style="color: #3b82f6;">【第三輪：收斂 WHAT】</strong>
+                        ${currentTopic.what}
+                    </div>
+                `;
+            }
+
+            // 更新按鈕狀態
+            btnPrev.disabled = currentPage === 0;
+            btnNext.disabled = currentPage === totalPages - 1;
+        }
+
+        function nextPage() {
+            if (currentPage < totalPages - 1) {
+                currentPage++;
+                renderPage();
+            }
+        }
+
+        function prevPage() {
+            if (currentPage > 0) {
+                currentPage--;
+                renderPage();
+            }
+        }
+
+        // 初始渲染
+        renderPage();
+    </script>
+</body>
+</html>
